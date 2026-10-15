@@ -112,3 +112,18 @@ deploy_app() {
     python3 attendance_checker.py
     cd ..
 }
+# Feature 2: Run
+run_app() {
+    read -p "Enter project suffix to run (ex: v1): " proj_suffix
+    TARGET_DIR="attendance_tracker_${proj_suffix}"
+
+    if [ ! -d "$TARGET_DIR" ]; then
+        echo "ERROR: Folder $TARGET_DIR not found."
+        return
+    fi
+
+    echo "[*] Running attendance tracker in $TARGET_DIR..."
+    cd "$TARGET_DIR"
+    python3 attendance_checker.py
+    cd ..
+}
