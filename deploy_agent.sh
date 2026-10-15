@@ -121,9 +121,60 @@ run_app() {
         echo "ERROR: Folder $TARGET_DIR not found."
         return
     fi
+# Feature 3: Archive
+archive_log() {
+    read -p "Enter project suffix to archive (ex: v1): " proj_suffix
+    TARGET_DIR="attendance_tracker_${proj_suffix}"
 
+    if [ ! -d "$TARGET_DIR" ]; then  
+        echo "ERROR: Folder $TARGET_DIR not found."
+        return
+    fi
+
+    TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+
+    # Check attendance log
+    if [ -f "$TARGET_DIR/reports/attendance.log" ]; then
+        mkdir -p "$TARGET_DIR/archives/attendance"
+        DEST="$TARGET_DIR/archives/attendance/attendance_${TIMESTAMP}.log"
+        cp "$TARGET_DIR/reports/attendance.log" "$DEST"
+        echo "[+] Archived attendance to: $DEST"
+    else
+        echo "[-] reports/attendance.log not found. Skipping."
+    fi
+
+    # Check absent log
+    if [ -f "$TARGET_DIR/reports/absent.log" ]; then
+        mkdir -p "$TARGET_DIR/archives/absent"
+        DEST="$TARGET_DIR/archives/absent/absent_${TIMESTAMP}.log"
+        cp "$TARGET_DIR/reports/absent.log" "$DEST"
+        echo "[+] Archived absent to: $DEST"
+    else
+        echo "[-] reports/absent.log not found. Skipping."
+    fi
+}
     echo "[*] Running attendance tracker in $TARGET_DIR..."
     cd "$TARGET_DIR"
     python3 attendance_checker.py
     cd ..
 }
+# Menu
+while true; do
+    echo ""
+    echo "================================"
+    echo "   ATTENDANCE DEPLOY AGENT"
+    echo "================================"
+    echo "1) Deploy"
+    echo "2) Run"
+    echo "3) Archive Logs"
+    echo "4) Exit"
+    read -p "Select [1-4]: " choice
+
+    case $choice in
+        1) deploy_app ;;
+        2) run_app ;;
+        3) archive_logs ;;
+        4) echo "Exiting."; exit 0 ;;
+        *) echo "Invalid option. Choose 1-4." ;;
+    esac
+done
