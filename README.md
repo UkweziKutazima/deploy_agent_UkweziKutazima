@@ -3,8 +3,11 @@
 This is my shell script for the ALU scripting summative lab.
 
 ## Features
+
 Deploy the application
+
 Run the app
+
 Archive logs
 
 ## How to use
